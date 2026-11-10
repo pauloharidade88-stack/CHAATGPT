@@ -1,3 +1,4 @@
+
 # CHAATGPT — Character Studio MCP
 
 Servidor MCP para gerar especificações e scripts procedurais de personagens 3D no Blender.
@@ -26,7 +27,7 @@ Para conectar o repositório existente:
 1. Abra Cloudflare Dashboard > **Workers & Pages**.
 2. Selecione o Worker **character-studio-mcp**.
 3. Abra **Settings > Builds** e escolha **Connect**.
-4. Conecte a conta GitHub e selecione `pauloharidade88-stack/CHAATGPT), branch `main`.
+4. Conecte a conta GitHub e selecione `pauloharidade88-stack/CHAATGPT`, branch `main`.
 5. Deixe o diretório raiz como `/`, sem build command obrigatório e deploy command `npx wrangler deploy`.
 6. Salve. Um novo commit na branch `main` inicia o build e deploy automaticamente.
 
@@ -51,3 +52,5 @@ O endpoint local MCP fica em `http://localhost:8787/mcp`.
 - Adicionar geração de roupas, acessórios, UVs e materiais.
 - Adicionar exportação e validação de FBX/GLB.
 - Proteger o endpoint com autenticação antes de expor ferramentas sensíveis.
+
+<!-- Atualização para disparar uma nova compilação pela integração Git. -->
