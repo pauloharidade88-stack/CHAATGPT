@@ -1,24 +1,25 @@
 import { McpServer } from "@modelcontextprotocol/server";
 import { createMcpHandler } from "agents/mcp/server";
 import { z } from "zod";
+import { BLENDER_GENERATOR_SCRIPT } from "./blender-script";
 
 function createServer() {
   const server = new McpServer({
     name: "character-studio-mcp",
-    version: "0.1.0"
+    version: "0.2.0"
   });
 
   server.registerTool(
     "create_character_brief",
     {
       description: "Creates a structured design brief for a 3D human, creature, or monster intended for Blender modeling and rigging.",
-      inputSchema: {
-        name: z.string().min(1).describe("Character name"),
+      inputSchema: z.object({
+        name: z.string().min(1),
         kind: z.enum(["human", "creature", "monster"]).default("human"),
         style: z.enum(["semi_realistic", "realistic", "stylized"]).default("semi_realistic"),
-        description: z.string().min(10).describe("Appearance, anatomy, clothing, materials, and personality"),
+        description: z.string().min(10),
         rig: z.enum(["humanoid", "quadruped", "custom"]).default("humanoid")
-      }
+      })
     },
     async ({ name, kind, style, description, rig }) => {
       const brief = {
@@ -36,7 +37,8 @@ function createServer() {
           "Weight-paint and test deformations",
           "Prepare a clean, named Blender collection"
         ],
-        export_targets: [".blend", ".fbx", ".glb"]
+        export_targets: [".blend", ".fbx", ".glb"],
+        note: "This is a production brief, not a finished 3D model."
       };
 
       return {
@@ -49,10 +51,42 @@ function createServer() {
   );
 
   server.registerTool(
+    "generate_blender_character_script",
+    {
+      description: "Returns a runnable Blender Python script that creates a procedural humanoid base mesh and a basic humanoid armature. Run the script inside Blender's Scripting workspace.",
+      inputSchema: z.object({
+        character_kind: z.enum(["human", "monster"]).default("human"),
+        height_meters: z.number().min(1.2).max(3.5).default(2.4),
+        character_name: z.string().min(1).max(64).default("CharacterStudio")
+      })
+    },
+    async ({ character_kind, height_meters, character_name }) => {
+      const safeName = character_name.replace(/[^a-zA-Z0-9_ -]/g, "").slice(0, 64) || "CharacterStudio";
+      const script = BLENDER_GENERATOR_SCRIPT
+        .replace('CHARACTER_NAME = "CharacterStudio_Humanoid"', 'CHARACTER_NAME = ' + JSON.stringify(safeName))
+        .replace('CHARACTER_KIND = "monster"', 'CHARACTER_KIND = ' + JSON.stringify(character_kind))
+        .replace('HEIGHT = 2.4', 'HEIGHT = ' + String(height_meters));
+
+      return {
+        content: [{
+          type: "text",
+          text: [
+            "Blender Python script generated.",
+            "Open Blender > Scripting > New, paste the script, then click Run Script.",
+            "This creates a basic procedural mannequin and armature; it is a starting blockout, not a finished realistic character.",
+            "",
+            script
+          ].join("\n")
+        }]
+      };
+    }
+  );
+
+  server.registerTool(
     "list_character_presets",
     {
       description: "Lists starter character categories and recommended rig types.",
-      inputSchema: {}
+      inputSchema: z.object({})
     },
     async () => ({
       content: [{
