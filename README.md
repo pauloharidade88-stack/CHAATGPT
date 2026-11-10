@@ -16,7 +16,7 @@ Servidor MCP para gerar especificações e scripts procedurais de personagens 3D
 4. Use a ferramenta MCP `generate_blender_character_script` para obter o script.
 5. Cole o código Python no editor de texto do Blender e clique em **Run Script**.
 
-O primeiro gerador é um blockout procedural: malha montada a partir de volumes, materiais simples e rig humanoide básico. Não é um personagem hiper-realista final. Para produção, ainda será necessário esculpir/refinar a topologia, fazer UVs, texturas, roupa, cabelo, pesos e testes de deformação.
+O primeiro gerador é um blockout procedural: malha montada a partir de volumes, materiais simples e rig humanoide básico. Não é um personagem hiper-realista final. Para produção, ainda será necessário esculpir/refinar a topologia, fazer UVs, texturas, roupa, cabelo, pesos e testes de deformação. O script também está disponível diretamente em [blender/character_generator.py](blender/character_generator.py).
 
 ## Publicar no Cloudflare Workers
 
